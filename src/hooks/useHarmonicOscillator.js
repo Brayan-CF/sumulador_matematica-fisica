@@ -19,61 +19,67 @@ export function useHarmonicOscillator() {
   const [analytics, setAnalytics] = useState({ period: 0, frequency: 0, amplitude: 0 })
   const [initialEnergy, setInitialEnergy] = useState(0)
 
-  const [pendulumParamsRaw, setPendulumParams] = useState({
-    length: 1.0,
-    mass: 1.0,
-    theta0: 0.3,
-    omega0: 0,
-    damping: 0.05
-  })
+  // ========================================================================
+  // ESTADOS PRIMITIVOS: Péndulo simple
+  // ========================================================================
+  const [pendulumLength, setPendulumLength] = useState(1.0)
+  const [pendulumMass, setPendulumMass] = useState(1.0)
+  const [pendulumTheta0, setPendulumTheta0] = useState(0.3)
+  const [pendulumOmega0, setPendulumOmega0] = useState(0)
+  const [pendulumDamping, setPendulumDamping] = useState(0.05)
 
-  const [springParamsRaw, setSpringParams] = useState({
-    mass: 1.0,
-    k: 10.0,
-    x0: 0.2,
-    v0: 0,
-    damping: 0.1
-  })
+  // ========================================================================
+  // ESTADOS PRIMITIVOS: Resorte-masa
+  // ========================================================================
+  const [springMass, setSpringMass] = useState(1.0)
+  const [springK, setSpringK] = useState(10.0)
+  const [springX0, setSpringX0] = useState(0.2)
+  const [springV0, setSpringV0] = useState(0)
+  const [springDamping, setSpringDamping] = useState(0.1)
 
-  const [doublePendulumParamsRaw, setDoublePendulumParams] = useState({
-    L1: 1.0,
-    L2: 1.0,
-    m1: 1.0,
-    m2: 1.0,
-    theta1_0: 0.3,
-    theta2_0: 0.1,
-    omega1_0: 0,
-    omega2_0: 0,
-    damping: 0.02
-  })
+  // ========================================================================
+  // ESTADOS PRIMITIVOS: Péndulo doble
+  // ========================================================================
+  const [doubleL1, setDoubleL1] = useState(1.0)
+  const [doubleL2, setDoubleL2] = useState(1.0)
+  const [doubleM1, setDoubleM1] = useState(1.0)
+  const [doubleM2, setDoubleM2] = useState(1.0)
+  const [doubleTheta1_0, setDoubleTheta1_0] = useState(0.3)
+  const [doubleTheta2_0, setDoubleTheta2_0] = useState(0.1)
+  const [doubleOmega1_0, setDoubleOmega1_0] = useState(0)
+  const [doubleOmega2_0, setDoubleOmega2_0] = useState(0)
+  const [doubleDamping, setDoubleDamping] = useState(0.02)
 
-  const pendulumParams = useMemo(() => pendulumParamsRaw, [
-    pendulumParamsRaw.length,
-    pendulumParamsRaw.mass,
-    pendulumParamsRaw.theta0,
-    pendulumParamsRaw.omega0,
-    pendulumParamsRaw.damping
-  ])
+  // ========================================================================
+  // OBJETOS ESTABILIZADOS: useMemo para evitar re-renders
+  // ========================================================================
+  const pendulumParams = useMemo(() => ({
+    length: pendulumLength,
+    mass: pendulumMass,
+    theta0: pendulumTheta0,
+    omega0: pendulumOmega0,
+    damping: pendulumDamping
+  }), [pendulumLength, pendulumMass, pendulumTheta0, pendulumOmega0, pendulumDamping])
 
-  const springParams = useMemo(() => springParamsRaw, [
-    springParamsRaw.mass,
-    springParamsRaw.k,
-    springParamsRaw.x0,
-    springParamsRaw.v0,
-    springParamsRaw.damping
-  ])
+  const springParams = useMemo(() => ({
+    mass: springMass,
+    k: springK,
+    x0: springX0,
+    v0: springV0,
+    damping: springDamping
+  }), [springMass, springK, springX0, springV0, springDamping])
 
-  const doublePendulumParams = useMemo(() => doublePendulumParamsRaw, [
-    doublePendulumParamsRaw.L1,
-    doublePendulumParamsRaw.L2,
-    doublePendulumParamsRaw.m1,
-    doublePendulumParamsRaw.m2,
-    doublePendulumParamsRaw.theta1_0,
-    doublePendulumParamsRaw.theta2_0,
-    doublePendulumParamsRaw.omega1_0,
-    doublePendulumParamsRaw.omega2_0,
-    doublePendulumParamsRaw.damping
-  ])
+  const doublePendulumParams = useMemo(() => ({
+    L1: doubleL1,
+    L2: doubleL2,
+    m1: doubleM1,
+    m2: doubleM2,
+    theta1_0: doubleTheta1_0,
+    theta2_0: doubleTheta2_0,
+    omega1_0: doubleOmega1_0,
+    omega2_0: doubleOmega2_0,
+    damping: doubleDamping
+  }), [doubleL1, doubleL2, doubleM1, doubleM2, doubleTheta1_0, doubleTheta2_0, doubleOmega1_0, doubleOmega2_0, doubleDamping])
 
   const setupSimulation = useCallback(() => {
     const sim = simulatorRef.current
@@ -111,16 +117,38 @@ export function useHarmonicOscillator() {
     setupSimulation()
   }, [pause, setupSimulation])
 
+  // ========================================================================
+  // ACTUALIZAR PARÁMETROS: Setea primitivos según tipo de oscilador
+  // ========================================================================
   const updateParameter = useCallback((paramName, value) => {
     if (oscillatorType === 'PENDULUM') {
-      setPendulumParams(prev => ({ ...prev, [paramName]: value }))
+      if (paramName === 'length') setPendulumLength(value)
+      else if (paramName === 'mass') setPendulumMass(value)
+      else if (paramName === 'theta0') setPendulumTheta0(value)
+      else if (paramName === 'omega0') setPendulumOmega0(value)
+      else if (paramName === 'damping') setPendulumDamping(value)
     } else if (oscillatorType === 'SPRING_MASS') {
-      setSpringParams(prev => ({ ...prev, [paramName]: value }))
+      if (paramName === 'mass') setSpringMass(value)
+      else if (paramName === 'k') setSpringK(value)
+      else if (paramName === 'x0') setSpringX0(value)
+      else if (paramName === 'v0') setSpringV0(value)
+      else if (paramName === 'damping') setSpringDamping(value)
     } else if (oscillatorType === 'DOUBLE_PENDULUM') {
-      setDoublePendulumParams(prev => ({ ...prev, [paramName]: value }))
+      if (paramName === 'L1') setDoubleL1(value)
+      else if (paramName === 'L2') setDoubleL2(value)
+      else if (paramName === 'm1') setDoubleM1(value)
+      else if (paramName === 'm2') setDoubleM2(value)
+      else if (paramName === 'theta1_0') setDoubleTheta1_0(value)
+      else if (paramName === 'theta2_0') setDoubleTheta2_0(value)
+      else if (paramName === 'omega1_0') setDoubleOmega1_0(value)
+      else if (paramName === 'omega2_0') setDoubleOmega2_0(value)
+      else if (paramName === 'damping') setDoubleDamping(value)
     }
   }, [oscillatorType])
 
+  // ========================================================================
+  // USEEFFECT: Loop de animación separado (solo depende de isRunning)
+  // ========================================================================
   useEffect(() => {
     if (!isRunning) return
 
@@ -141,9 +169,12 @@ export function useHarmonicOscillator() {
     }
   }, [isRunning])
 
+  // ========================================================================
+  // USEEFFECT: Setup inicial y al cambiar parámetros
+  // ========================================================================
   useEffect(() => {
     setupSimulation()
-  }, [setupSimulation])
+  }, [oscillatorType, pendulumParams, springParams, doublePendulumParams])
 
   return {
     oscillatorType,

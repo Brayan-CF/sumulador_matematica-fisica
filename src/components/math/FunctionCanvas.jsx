@@ -2,50 +2,78 @@
 // PHYMATH-SIM: CANVAS DE FUNCIONES MATEMÁTICAS
 // ============================================================================
 // PROPÓSITO: Renderiza gráficas de funciones, derivadas y grid en canvas
+// OPTIMIZACIÓN: Factores de transformación cacheados con useMemo
 // ============================================================================
 
-import React, { useRef, useEffect, useCallback } from 'react'
+import React, { useRef, useEffect, useMemo } from 'react'
 
 function FunctionCanvas({ functions, viewport, showGrid, showAxis, showDerivative }) {
   const canvasRef = useRef(null)
+  const renderRef = useRef(null)
 
-  const worldToCanvas = useCallback((x, y, canvas) => {
-    const canvasX = ((x - viewport.xMin) / (viewport.xMax - viewport.xMin)) * (canvas.width - 100) + 50
-    const canvasY = canvas.height - 50 - ((y - viewport.yMin) / (viewport.yMax - viewport.yMin)) * (canvas.height - 100)
-    return { x: canvasX, y: canvasY }
-  }, [viewport])
+  // ========================================================================
+  // USEMEMO: Factores de transformación cacheados (evita 6000+ cálculos/s)
+  // ========================================================================
+  const transformFactors = useMemo(() => {
+    const rangeX = viewport.xMax - viewport.xMin
+    const rangeY = viewport.yMax - viewport.yMin
+    const canvasWidth = 800
+    const canvasHeight = 400
+    const margin = 50
+    
+    return {
+      scaleX: (canvasWidth - 2 * margin) / rangeX,
+      scaleY: (canvasHeight - 2 * margin) / rangeY,
+      offsetX: -viewport.xMin * ((canvasWidth - 2 * margin) / rangeX) + margin,
+      offsetY: canvasHeight - margin + viewport.yMin * ((canvasHeight - 2 * margin) / rangeY),
+      margin,
+      canvasWidth,
+      canvasHeight,
+      rangeX,
+      rangeY
+    }
+  }, [viewport.xMin, viewport.xMax, viewport.yMin, viewport.yMax])
 
-  const drawGrid = useCallback((ctx, canvas) => {
+  // ========================================================================
+  // FUNCIÓN INLINE: Conversión mundo → canvas (usa factores cacheados)
+  // ========================================================================
+  const worldToCanvas = (x, y) => ({
+    x: x * transformFactors.scaleX + transformFactors.offsetX,
+    y: transformFactors.offsetY - y * transformFactors.scaleY
+  })
+
+  // ========================================================================
+  // FUNCIÓN INLINE: Dibuja grilla (sin useCallback)
+  // ========================================================================
+  const drawGrid = (ctx) => {
     if (!showGrid) return
 
     ctx.strokeStyle = '#e0e0e0'
     ctx.lineWidth = 1
 
-    const rangeX = viewport.xMax - viewport.xMin
-    const rangeY = viewport.yMax - viewport.yMin
-    const stepX = Math.pow(10, Math.floor(Math.log10(rangeX / 10)))
-    const stepY = Math.pow(10, Math.floor(Math.log10(rangeY / 10)))
+    const stepX = Math.pow(10, Math.floor(Math.log10(transformFactors.rangeX / 10)))
+    const stepY = Math.pow(10, Math.floor(Math.log10(transformFactors.rangeY / 10)))
 
     for (let x = Math.ceil(viewport.xMin / stepX) * stepX; x <= viewport.xMax; x += stepX) {
-      const canvasPos = worldToCanvas(x, 0, canvas)
+      const canvasPos = worldToCanvas(x, 0)
       ctx.beginPath()
-      ctx.moveTo(canvasPos.x, 50)
-      ctx.lineTo(canvasPos.x, canvas.height - 50)
+      ctx.moveTo(canvasPos.x, transformFactors.margin)
+      ctx.lineTo(canvasPos.x, transformFactors.canvasHeight - transformFactors.margin)
       ctx.stroke()
 
       if (Math.abs(x) > 0.001) {
         ctx.fillStyle = '#666'
         ctx.font = '10px Arial'
         ctx.textAlign = 'center'
-        ctx.fillText(x.toFixed(1), canvasPos.x, canvas.height - 30)
+        ctx.fillText(x.toFixed(1), canvasPos.x, transformFactors.canvasHeight - 30)
       }
     }
 
     for (let y = Math.ceil(viewport.yMin / stepY) * stepY; y <= viewport.yMax; y += stepY) {
-      const canvasPos = worldToCanvas(0, y, canvas)
+      const canvasPos = worldToCanvas(0, y)
       ctx.beginPath()
-      ctx.moveTo(50, canvasPos.y)
-      ctx.lineTo(canvas.width - 50, canvasPos.y)
+      ctx.moveTo(transformFactors.margin, canvasPos.y)
+      ctx.lineTo(transformFactors.canvasWidth - transformFactors.margin, canvasPos.y)
       ctx.stroke()
 
       if (Math.abs(y) > 0.001) {
@@ -55,42 +83,48 @@ function FunctionCanvas({ functions, viewport, showGrid, showAxis, showDerivativ
         ctx.fillText(y.toFixed(1), 40, canvasPos.y + 3)
       }
     }
-  }, [showGrid, viewport, worldToCanvas])
+  }
 
-  const drawAxes = useCallback((ctx, canvas) => {
+  // ========================================================================
+  // FUNCIÓN INLINE: Dibuja ejes (sin useCallback)
+  // ========================================================================
+  const drawAxes = (ctx) => {
     if (!showAxis) return
 
     ctx.strokeStyle = '#333'
     ctx.lineWidth = 2
 
-    const xAxisY = worldToCanvas(0, 0, canvas).y
-    if (xAxisY >= 50 && xAxisY <= canvas.height - 50) {
+    const xAxisY = worldToCanvas(0, 0).y
+    if (xAxisY >= transformFactors.margin && xAxisY <= transformFactors.canvasHeight - transformFactors.margin) {
       ctx.beginPath()
-      ctx.moveTo(50, xAxisY)
-      ctx.lineTo(canvas.width - 50, xAxisY)
+      ctx.moveTo(transformFactors.margin, xAxisY)
+      ctx.lineTo(transformFactors.canvasWidth - transformFactors.margin, xAxisY)
       ctx.stroke()
     }
 
-    const yAxisX = worldToCanvas(0, 0, canvas).x
-    if (yAxisX >= 50 && yAxisX <= canvas.width - 50) {
+    const yAxisX = worldToCanvas(0, 0).x
+    if (yAxisX >= transformFactors.margin && yAxisX <= transformFactors.canvasWidth - transformFactors.margin) {
       ctx.beginPath()
-      ctx.moveTo(yAxisX, 50)
-      ctx.lineTo(yAxisX, canvas.height - 50)
+      ctx.moveTo(yAxisX, transformFactors.margin)
+      ctx.lineTo(yAxisX, transformFactors.canvasHeight - transformFactors.margin)
       ctx.stroke()
     }
 
     ctx.fillStyle = '#333'
     ctx.font = '14px Arial'
     ctx.textAlign = 'center'
-    ctx.fillText('x', canvas.width - 30, xAxisY > canvas.height - 70 ? canvas.height - 70 : xAxisY + 20)
+    ctx.fillText('x', transformFactors.canvasWidth - 30, xAxisY > transformFactors.canvasHeight - 70 ? transformFactors.canvasHeight - 70 : xAxisY + 20)
     ctx.save()
     ctx.translate(yAxisX < 70 ? 70 : yAxisX - 20, 30)
     ctx.rotate(-Math.PI / 2)
     ctx.fillText('y', 0, 0)
     ctx.restore()
-  }, [showAxis, worldToCanvas])
+  }
 
-  const drawFunction = useCallback((ctx, canvas, func, isDerivative = false) => {
+  // ========================================================================
+  // FUNCIÓN INLINE: Dibuja función (sin useCallback)
+  // ========================================================================
+  const drawFunction = (ctx, func, isDerivative = false) => {
     if (!func.points || func.points.length === 0) return
 
     const points = isDerivative ? func.derivativePoints : func.points
@@ -110,10 +144,10 @@ function FunctionCanvas({ functions, viewport, showGrid, showAxis, showDerivativ
         continue
       }
 
-      const canvasPos = worldToCanvas(point.x, point.y, canvas)
+      const canvasPos = worldToCanvas(point.x, point.y)
 
-      if (canvasPos.x >= 50 && canvasPos.x <= canvas.width - 50 &&
-          canvasPos.y >= 50 && canvasPos.y <= canvas.height - 50) {
+      if (canvasPos.x >= transformFactors.margin && canvasPos.x <= transformFactors.canvasWidth - transformFactors.margin &&
+          canvasPos.y >= transformFactors.margin && canvasPos.y <= transformFactors.canvasHeight - transformFactors.margin) {
         
         if (!isDrawing) {
           ctx.beginPath()
@@ -135,15 +169,18 @@ function FunctionCanvas({ functions, viewport, showGrid, showAxis, showDerivativ
     }
     
     ctx.setLineDash([])
-  }, [worldToCanvas])
+  }
 
-  const drawLegend = useCallback((ctx, canvas, functions) => {
+  // ========================================================================
+  // FUNCIÓN INLINE: Dibuja leyenda (sin useCallback)
+  // ========================================================================
+  const drawLegend = (ctx, functions) => {
     if (!functions || functions.length === 0) return
 
     const visibleFunctions = functions.filter(func => func.visible)
     if (visibleFunctions.length === 0) return
 
-    const legendX = canvas.width - 200
+    const legendX = transformFactors.canvasWidth - 200
     const legendY = 60
     const legendWidth = 180
     const legendHeight = visibleFunctions.length * 25 + 40
@@ -189,41 +226,53 @@ function FunctionCanvas({ functions, viewport, showGrid, showAxis, showDerivativ
         ctx.fillText("f'(x)", legendX + 35, y + 14)
       }
     })
-  }, [showDerivative])
+  }
 
-  const render = useCallback(() => {
+  // ========================================================================
+  // USEEFFECT: Renderizado con requestAnimationFrame
+  // ========================================================================
+  useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    
-    drawGrid(ctx, canvas)
-    drawAxes(ctx, canvas)
-    
-    if (functions && functions.length > 0) {
-      functions.forEach(func => {
-        if (func.visible) {
-          drawFunction(ctx, canvas, func, false)
-          if (showDerivative) {
-            drawFunction(ctx, canvas, func, true)
-          }
-        }
-      })
-
-      drawLegend(ctx, canvas, functions)
+    if (renderRef.current) {
+      cancelAnimationFrame(renderRef.current)
     }
 
-    ctx.fillStyle = '#666'
-    ctx.font = '10px Arial'
-    ctx.textAlign = 'left'
-    ctx.fillText(`Rango: [${viewport.xMin.toFixed(1)}, ${viewport.xMax.toFixed(1)}] × [${viewport.yMin.toFixed(1)}, ${viewport.yMax.toFixed(1)}]`, 10, canvas.height - 10)
+    const render = () => {
+      const ctx = canvas.getContext('2d')
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      
+      drawGrid(ctx)
+      drawAxes(ctx)
+      
+      if (functions && functions.length > 0) {
+        functions.forEach(func => {
+          if (func.visible) {
+            drawFunction(ctx, func, false)
+            if (showDerivative) {
+              drawFunction(ctx, func, true)
+            }
+          }
+        })
 
-  }, [functions, viewport, showGrid, showAxis, showDerivative, drawGrid, drawAxes, drawFunction, drawLegend])
+        drawLegend(ctx, functions)
+      }
 
-  useEffect(() => {
-    render()
-  }, [render])
+      ctx.fillStyle = '#666'
+      ctx.font = '10px Arial'
+      ctx.textAlign = 'left'
+      ctx.fillText(`Rango: [${viewport.xMin.toFixed(1)}, ${viewport.xMax.toFixed(1)}] × [${viewport.yMin.toFixed(1)}, ${viewport.yMax.toFixed(1)}]`, 10, canvas.height - 10)
+    }
+
+    renderRef.current = requestAnimationFrame(render)
+
+    return () => {
+      if (renderRef.current) {
+        cancelAnimationFrame(renderRef.current)
+      }
+    }
+  }, [functions, viewport, showGrid, showAxis, showDerivative, transformFactors])
 
   return (
     <canvas

@@ -19,60 +19,84 @@ function HarmonicOscillatorCanvas({
   const phaseCanvasRef = useRef(null)
   const energyCanvasRef = useRef(null)
 
+  // ========================================================================
+  // USEEFFECT: Renderiza canvas principal con RAF
+  // ========================================================================
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
-    const simulator = simulatorRef.current
+    const renderFrame = () => {
+      const ctx = canvas.getContext('2d')
+      const simulator = simulatorRef.current
 
-    // Limpiar canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+      // Limpiar canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    // Dibujar según tipo de oscilador
-    try {
-      if (oscillatorType === 'DOUBLE_PENDULUM') {
-        simulator.drawDoublePendulum(ctx, canvas.width, canvas.height)
-      } else if (oscillatorType === 'SPRING_MASS' || oscillatorType === 'VERTICAL_SPRING') {
-        simulator.drawSpringMass(ctx, canvas.width, canvas.height)
-      } else {
-        simulator.drawPendulum(ctx, canvas.width, canvas.height)
+      // Dibujar según tipo de oscilador
+      try {
+        if (oscillatorType === 'DOUBLE_PENDULUM') {
+          simulator.drawDoublePendulum(ctx, canvas.width, canvas.height)
+        } else if (oscillatorType === 'SPRING_MASS' || oscillatorType === 'VERTICAL_SPRING') {
+          simulator.drawSpringMass(ctx, canvas.width, canvas.height)
+        } else {
+          simulator.drawPendulum(ctx, canvas.width, canvas.height)
+        }
+      } catch (error) {
+        console.error('Error dibujando oscilador:', error)
       }
-    } catch (error) {
-      console.error('Error dibujando oscilador:', error)
     }
+
+    const rafId = requestAnimationFrame(renderFrame)
+    return () => cancelAnimationFrame(rafId)
   }, [currentState, oscillatorType, simulatorRef])
 
+  // ========================================================================
+  // USEEFFECT: Renderiza espacio de fases con RAF
+  // ========================================================================
   useEffect(() => {
     if (!showPhase) return
     
     const canvas = phaseCanvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
-    const simulator = simulatorRef.current
+    const renderFrame = () => {
+      const ctx = canvas.getContext('2d')
+      const simulator = simulatorRef.current
 
-    try {
-      simulator.drawPhaseSpace(ctx, canvas.width, canvas.height)
-    } catch (error) {
-      console.error('Error dibujando espacio de fases:', error)
+      try {
+        simulator.drawPhaseSpace(ctx, canvas.width, canvas.height)
+      } catch (error) {
+        console.error('Error dibujando espacio de fases:', error)
+      }
     }
+
+    const rafId = requestAnimationFrame(renderFrame)
+    return () => cancelAnimationFrame(rafId)
   }, [currentState, showPhase, simulatorRef])
 
+  // ========================================================================
+  // USEEFFECT: Renderiza gráfico de energía con RAF
+  // ========================================================================
   useEffect(() => {
     if (!showEnergy) return
     
     const canvas = energyCanvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
-    const simulator = simulatorRef.current
+    const renderFrame = () => {
+      const ctx = canvas.getContext('2d')
+      const simulator = simulatorRef.current
 
-    try {
-      simulator.drawEnergyGraph(ctx, canvas.width, canvas.height)
-    } catch (error) {
-      console.error('Error dibujando energías:', error)
+      try {
+        simulator.drawEnergyGraph(ctx, canvas.width, canvas.height)
+      } catch (error) {
+        console.error('Error dibujando energías:', error)
+      }
     }
+
+    const rafId = requestAnimationFrame(renderFrame)
+    return () => cancelAnimationFrame(rafId)
   }, [currentState, showEnergy, simulatorRef])
 
   /* ============================================================================

@@ -2,9 +2,10 @@
 // PHYMATH-SIM: RENDERIZADOR DE CANVAS PARA PROYECTILES
 // ============================================================================
 // PROPÓSITO: Dibuja trayectorias, proyectiles y vectores en canvas
+// OPTIMIZACIÓN: Loop de animación único con limpieza correcta
 // ============================================================================
 
-import React, { useRef, useEffect, useCallback } from 'react'
+import React, { useRef, useEffect } from 'react'
 
 const MARGIN = 50
 const ARROW_LENGTH = 8
@@ -13,13 +14,20 @@ const VECTOR_SCALE = 0.5
 function CanvasRenderer({ trajectories, showTrail, showVectors }) {
   const canvasRef = useRef(null)
   const animationRef = useRef(null)
+  const animationStateRef = useRef({ currentIndex: 0, isAnimating: false })
 
-  const toCanvasCoords = useCallback((x, y, canvas, scaleFactor) => ({
+  // ========================================================================
+  // FUNCIÓN INLINE: Conversión de coordenadas (sin useCallback)
+  // ========================================================================
+  const toCanvasCoords = (x, y, canvas, scaleFactor) => ({
     x: MARGIN + x * scaleFactor,
     y: canvas.height - MARGIN - y * scaleFactor
-  }), [])
+  })
 
-  const drawAxes = useCallback((ctx, canvas) => {
+  // ========================================================================
+  // FUNCIÓN INLINE: Dibuja ejes y grilla (sin useCallback)
+  // ========================================================================
+  const drawAxes = (ctx, canvas) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     
     ctx.strokeStyle = '#333'
@@ -36,12 +44,7 @@ function CanvasRenderer({ trajectories, showTrail, showVectors }) {
     ctx.font = '14px Arial'
     ctx.fillText('X (m)', canvas.width - 80, canvas.height - 20)
     ctx.fillText('Y (m)', 15, 40)
-    ctx.fillText('0', 35, canvas.height - 30)
     
-    drawGrid(ctx, canvas)
-  }, [])
-
-  const drawGrid = useCallback((ctx, canvas) => {
     ctx.strokeStyle = '#e0e0e0'
     ctx.lineWidth = 1
     
@@ -58,9 +61,12 @@ function CanvasRenderer({ trajectories, showTrail, showVectors }) {
       ctx.lineTo(canvas.width - MARGIN, y)
       ctx.stroke()
     }
-  }, [])
+  }
 
-  const drawPath = useCallback((ctx, canvas, points, scaleFactor, color, lineWidth = 2, dashed = false) => {
+  // ========================================================================
+  // FUNCIÓN INLINE: Dibuja trayectoria (sin useCallback)
+  // ========================================================================
+  const drawPath = (ctx, canvas, points, scaleFactor, color, lineWidth = 2, dashed = false) => {
     if (!points || points.length === 0) return
 
     ctx.strokeStyle = color
@@ -74,9 +80,12 @@ function CanvasRenderer({ trajectories, showTrail, showVectors }) {
     })
     ctx.stroke()
     ctx.setLineDash([])
-  }, [toCanvasCoords])
+  }
 
-  const drawProjectile = useCallback((ctx, canvas, position, scaleFactor, color) => {
+  // ========================================================================
+  // FUNCIÓN INLINE: Dibuja proyectil (sin useCallback)
+  // ========================================================================
+  const drawProjectile = (ctx, canvas, position, scaleFactor, color) => {
     const coords = toCanvasCoords(position.x, position.y, canvas, scaleFactor)
     
     ctx.fillStyle = color
@@ -86,9 +95,12 @@ function CanvasRenderer({ trajectories, showTrail, showVectors }) {
     ctx.arc(coords.x, coords.y, 8, 0, 2 * Math.PI)
     ctx.fill()
     ctx.stroke()
-  }, [toCanvasCoords])
+  }
 
-  const drawVector = useCallback((ctx, canvas, position, scaleFactor, color) => {
+  // ========================================================================
+  // FUNCIÓN INLINE: Dibuja vector (sin useCallback)
+  // ========================================================================
+  const drawVector = (ctx, canvas, position, scaleFactor, color) => {
     if (!position.vx || !position.vy) return
 
     const start = toCanvasCoords(position.x, position.y, canvas, scaleFactor)
@@ -115,9 +127,12 @@ function CanvasRenderer({ trajectories, showTrail, showVectors }) {
       endY - ARROW_LENGTH * Math.sin(angle + Math.PI / 6)
     )
     ctx.stroke()
-  }, [toCanvasCoords])
+  }
 
-  const drawLegend = useCallback((ctx, canvas, trajectories) => {
+  // ========================================================================
+  // FUNCIÓN INLINE: Dibuja leyenda (sin useCallback)
+  // ========================================================================
+  const drawLegend = (ctx, canvas, trajectories) => {
     const legendX = canvas.width - 150
     const legendY = 60
     const height = trajectories.length * 25 + 30
@@ -145,9 +160,12 @@ function CanvasRenderer({ trajectories, showTrail, showVectors }) {
       ctx.font = '12px Arial'
       ctx.fillText(t.name, legendX + 25, y + 4)
     })
-  }, [])
+  }
 
-  const calculateScaleFactor = useCallback((trajectories, canvas) => {
+  // ========================================================================
+  // FUNCIÓN INLINE: Calcula factor de escala (sin useCallback)
+  // ========================================================================
+  const calculateScaleFactor = (trajectories, canvas) => {
     if (!trajectories || trajectories.length === 0) return 1
 
     const maxRange = Math.max(...trajectories.map(t => 
@@ -160,17 +178,23 @@ function CanvasRenderer({ trajectories, showTrail, showVectors }) {
     if (maxRange === 0 && maxHeight === 0) return 1
     
     return Math.min((canvas.width - 100) / maxRange, (canvas.height - 100) / maxHeight)
-  }, [])
+  }
 
-  const render = useCallback(() => {
+  // ========================================================================
+  // USEEFFECT: Loop de animación único con limpieza correcta
+  // ========================================================================
+  useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
     const ctx = canvas.getContext('2d')
     const scaleFactor = calculateScaleFactor(trajectories, canvas)
+    const state = animationStateRef.current
 
+    state.isAnimating = false
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current)
+      animationRef.current = null
     }
 
     if (!trajectories || trajectories.length === 0) {
@@ -192,46 +216,46 @@ function CanvasRenderer({ trajectories, showTrail, showVectors }) {
       trajectories.forEach(t => {
         drawPath(ctx, canvas, t.points, scaleFactor, t.color, 2, true)
       })
-    } else {
-      const maxPoints = Math.max(...trajectories.map(t => t.points?.length || 0))
-      let currentIndex = 0
-      const speed = 2
-
-      const animate = () => {
-        if (currentIndex < maxPoints) {
-          drawAxes(ctx, canvas)
-
-          trajectories.forEach(t => {
-            if (t.points && currentIndex < t.points.length) {
-              const current = t.points[currentIndex]
-              
-              drawPath(ctx, canvas, t.points.slice(0, currentIndex + 1), scaleFactor, t.color, 3, false)
-              drawProjectile(ctx, canvas, current, scaleFactor, t.color)
-              
-              if (showVectors && current.vx !== undefined) {
-                drawVector(ctx, canvas, current, scaleFactor, t.color)
-              }
-            }
-          })
-
-          currentIndex += speed
-          animationRef.current = setTimeout(() => requestAnimationFrame(animate), 60)
-        }
-      }
-
-      animate()
+      return
     }
-  }, [trajectories, showTrail, showVectors, drawAxes, drawPath, drawProjectile, drawVector, drawLegend, calculateScaleFactor, toCanvasCoords])
 
-  useEffect(() => {
-    render()
-    
+    const maxPoints = Math.max(...trajectories.map(t => t.points?.length || 0))
+    state.currentIndex = 0
+    state.isAnimating = true
+    const speed = 2
+
+    const animate = () => {
+      if (!state.isAnimating || state.currentIndex >= maxPoints) return
+
+      drawAxes(ctx, canvas)
+
+      trajectories.forEach(t => {
+        if (t.points && state.currentIndex < t.points.length) {
+          const current = t.points[state.currentIndex]
+          
+          drawPath(ctx, canvas, t.points.slice(0, state.currentIndex + 1), scaleFactor, t.color, 3, false)
+          drawProjectile(ctx, canvas, current, scaleFactor, t.color)
+          
+          if (showVectors && current.vx !== undefined) {
+            drawVector(ctx, canvas, current, scaleFactor, t.color)
+          }
+        }
+      })
+
+      state.currentIndex += speed
+      animationRef.current = requestAnimationFrame(animate)
+    }
+
+    animationRef.current = requestAnimationFrame(animate)
+
     return () => {
+      state.isAnimating = false
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
+        animationRef.current = null
       }
     }
-  }, [render])
+  }, [trajectories, showTrail, showVectors])
 
   return (
     <canvas
