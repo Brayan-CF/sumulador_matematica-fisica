@@ -1,0 +1,146 @@
+/******************************************************************************
+ * ESTILOS: CHECKBOX COMPONENT (ATOM)
+ * Estilos modulares para el componente de checkbox reutilizable
+ ******************************************************************************/
+
+/* Contenedor del checkbox */
+.checkbox-container {
+  margin-bottom: 0.75rem;
+  padding: 0.35rem 0;
+}
+
+/* Input checkbox estilizado */
+.checkbox-input {
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+  border: 2px solid var(--bs-border-color);
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Focus state */
+.checkbox-input:focus {
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), 0.15);
+  outline: none;
+}
+
+/* Hover effect */
+.checkbox-input:hover:not(:disabled) {
+  border-color: var(--bs-primary);
+  transform: scale(1.05);
+}
+
+/* Checked state */
+.checkbox-input:checked {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+}
+
+/* Active state */
+.checkbox-input:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+/* Disabled state */
+.checkbox-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Label del checkbox */
+.checkbox-label {
+  margin-left: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.95rem;
+  color: var(--bs-body-color);
+  transition: color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Hover en label */
+.checkbox-label:hover {
+  color: var(--bs-primary);
+}
+
+/* Icono dentro del label */
+.checkbox-icon {
+  font-size: 1rem;
+  opacity: 0.85;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Efecto hover en icono */
+.checkbox-label:hover .checkbox-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Animación cuando se marca */
+.checkbox-input:checked + .checkbox-label {
+  font-weight: 500;
+}
+
+.checkbox-input:checked + .checkbox-label .checkbox-icon {
+  color: var(--bs-primary);
+  transform: rotate(360deg);
+}
+
+/* Tema oscuro */
+.dark-theme .checkbox-input {
+  border-color: #6c757d;
+}
+
+.dark-theme .checkbox-input:hover:not(:disabled) {
+  border-color: var(--bs-info);
+}
+
+.dark-theme .checkbox-input:checked {
+  background-color: var(--bs-info);
+  border-color: var(--bs-info);
+}
+
+/* Animación al cargar */
+.checkbox-container {
+  animation: fadeInCheckbox 0.3s ease-in-out;
+}
+
+@keyframes fadeInCheckbox {
+  from {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Grupo de checkboxes */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .checkbox-label {
+    font-size: 0.9rem;
+  }
+  
+  .checkbox-input {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .checkbox-icon {
+    font-size: 0.95rem;
+  }
+}

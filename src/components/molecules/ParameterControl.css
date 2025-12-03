@@ -1,0 +1,168 @@
+/******************************************************************************
+ * ESTILOS: PARAMETER CONTROL COMPONENT (MOLECULE)
+ * Estilos modulares para el componente de control de parámetros
+ ******************************************************************************/
+
+/* Contenedor de la tarjeta de parámetros */
+.parameter-control {
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Hover effect en la tarjeta */
+.parameter-control:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Header de la tarjeta */
+.parameter-control-header {
+  background: linear-gradient(135deg, var(--bs-primary) 0%, #0056b3 100%);
+  color: white;
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Icono en el header */
+.parameter-control-icon {
+  font-size: 1.25rem;
+  opacity: 0.9;
+}
+
+/* Título del header */
+.parameter-control-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Body de la tarjeta */
+.parameter-control-body {
+  padding: 1.5rem 1.25rem;
+  background: var(--bs-body-bg);
+}
+
+/* Separador entre sliders */
+.parameter-control-body > *:not(:last-child) {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Tema oscuro */
+.dark-theme .parameter-control {
+  background: #2d3748;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .parameter-control:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+.dark-theme .parameter-control-header {
+  background: linear-gradient(135deg, var(--bs-info) 0%, #0dcaf0 100%);
+}
+
+.dark-theme .parameter-control-body {
+  background: #2d3748;
+}
+
+.dark-theme .parameter-control-body > *:not(:last-child) {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Estado colapsado (opcional) */
+.parameter-control-collapsed .parameter-control-body {
+  display: none;
+}
+
+.parameter-control-header.collapsible {
+  cursor: pointer;
+  user-select: none;
+}
+
+.parameter-control-header.collapsible:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+}
+
+/* Indicador de colapso */
+.parameter-control-toggle {
+  margin-left: auto;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.parameter-control-collapsed .parameter-control-toggle {
+  transform: rotate(-90deg);
+}
+
+/* Animación de entrada */
+.parameter-control {
+  animation: fadeInParameter 0.4s ease-in-out;
+}
+
+@keyframes fadeInParameter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Badge de contador */
+.parameter-control-count {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+  margin-left: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .parameter-control-header {
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+  }
+  
+  .parameter-control-title {
+    font-size: 1rem;
+  }
+  
+  .parameter-control-body {
+    padding: 1.25rem 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .parameter-control {
+    margin-bottom: 1rem;
+  }
+  
+  .parameter-control-header {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.95rem;
+  }
+  
+  .parameter-control-icon {
+    font-size: 1.1rem;
+  }
+  
+  .parameter-control-body {
+    padding: 1rem 0.875rem;
+  }
+}

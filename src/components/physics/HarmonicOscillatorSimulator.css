@@ -1,0 +1,368 @@
+/******************************************************************************
+ * ESTILOS: HARMONIC OSCILLATOR SIMULATOR (PAGE)
+ * Estilos específicos para el simulador de oscilador armónico
+ ******************************************************************************/
+
+/* Contenedor principal */
+.harmonic-oscillator-simulator {
+  position: relative;
+}
+
+/* Selector de tipo de oscilador */
+.oscillator-type-selector {
+  margin-bottom: 1.5rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, rgba(111, 66, 193, 0.08) 0%, rgba(111, 66, 193, 0.04) 100%);
+  border-radius: 0.5rem;
+  border: 2px solid rgba(111, 66, 193, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.oscillator-type-selector-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(111, 66, 193, 0.2);
+}
+
+.oscillator-type-selector-icon {
+  font-size: 1.4rem;
+  color: #6f42c1;
+}
+
+.oscillator-type-selector-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #6f42c1;
+}
+
+/* Grid de tipos */
+.oscillator-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+/* Botón de tipo de oscilador */
+.oscillator-type-button {
+  padding: 1rem;
+  background: white;
+  border: 2px solid rgba(111, 66, 193, 0.2);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.oscillator-type-button:hover {
+  background: rgba(111, 66, 193, 0.05);
+  border-color: #6f42c1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(111, 66, 193, 0.2);
+}
+
+.oscillator-type-button.active {
+  background: linear-gradient(135deg, #6f42c1 0%, #5a31a3 100%);
+  border-color: #6f42c1;
+  color: white;
+  box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+}
+
+.oscillator-type-button.active::after {
+  content: '✓';
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 20px;
+  height: 20px;
+  background: white;
+  color: #6f42c1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.oscillator-type-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.oscillator-type-button.active .oscillator-type-icon {
+  color: white;
+}
+
+.oscillator-type-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.oscillator-type-description {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* Sección de acciones */
+.oscillator-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(111, 66, 193, 0.05) 0%, rgba(111, 66, 193, 0.02) 100%);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(111, 66, 193, 0.1);
+}
+
+/* Controles de visualización adicionales */
+.oscillator-visualization-controls {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(13, 202, 240, 0.05);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(13, 202, 240, 0.1);
+}
+
+.oscillator-visualization-controls-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: var(--bs-info);
+  font-size: 1rem;
+}
+
+.oscillator-visualization-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Panel de análisis */
+.oscillator-analytics {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #fff3cd 0%, #fffae6 100%);
+  border-radius: 0.5rem;
+  border-left: 4px solid #ffc107;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.oscillator-analytics-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(255, 193, 7, 0.3);
+}
+
+.oscillator-analytics-icon {
+  font-size: 1.4rem;
+  color: #d39e00;
+}
+
+.oscillator-analytics-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #664d03;
+}
+
+.oscillator-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.oscillator-analytics-item {
+  padding: 0.875rem;
+  background: white;
+  border-radius: 0.375rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.oscillator-analytics-label {
+  font-size: 0.85rem;
+  color: var(--bs-secondary);
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+
+.oscillator-analytics-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #d39e00;
+}
+
+/* Tema oscuro */
+.dark-theme .oscillator-type-selector {
+  background: linear-gradient(135deg, rgba(111, 66, 193, 0.12) 0%, rgba(111, 66, 193, 0.06) 100%);
+  border-color: rgba(111, 66, 193, 0.25);
+}
+
+.dark-theme .oscillator-type-selector-icon,
+.dark-theme .oscillator-type-selector-title {
+  color: #a78bfa;
+}
+
+.dark-theme .oscillator-type-button {
+  background: #2d3748;
+  border-color: rgba(111, 66, 193, 0.3);
+  color: #e0e0e0;
+}
+
+.dark-theme .oscillator-type-button:hover {
+  background: rgba(111, 66, 193, 0.15);
+}
+
+.dark-theme .oscillator-type-button.active {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: white;
+}
+
+.dark-theme .oscillator-actions {
+  background: linear-gradient(135deg, rgba(111, 66, 193, 0.08) 0%, rgba(111, 66, 193, 0.04) 100%);
+  border-color: rgba(111, 66, 193, 0.15);
+}
+
+.dark-theme .oscillator-visualization-controls {
+  background: rgba(13, 202, 240, 0.08);
+  border-color: rgba(13, 202, 240, 0.15);
+}
+
+.dark-theme .oscillator-visualization-controls-title {
+  color: #6edff6;
+}
+
+.dark-theme .oscillator-analytics {
+  background: linear-gradient(135deg, #4d3d1a 0%, #5c4a20 100%);
+  border-left-color: #ffc107;
+}
+
+.dark-theme .oscillator-analytics-title {
+  color: #ffd966;
+}
+
+.dark-theme .oscillator-analytics-item {
+  background: #2d3748;
+}
+
+.dark-theme .oscillator-analytics-value {
+  color: #ffc107;
+}
+
+/* Animaciones */
+.oscillator-type-button {
+  animation: fadeInType 0.4s ease-out backwards;
+}
+
+.oscillator-type-button:nth-child(1) { animation-delay: 0.05s; }
+.oscillator-type-button:nth-child(2) { animation-delay: 0.1s; }
+.oscillator-type-button:nth-child(3) { animation-delay: 0.15s; }
+.oscillator-type-button:nth-child(4) { animation-delay: 0.2s; }
+.oscillator-type-button:nth-child(5) { animation-delay: 0.25s; }
+
+@keyframes fadeInType {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.oscillator-analytics {
+  animation: slideInAnalytics 0.5s ease-out;
+}
+
+@keyframes slideInAnalytics {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .oscillator-type-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .oscillator-type-selector {
+    padding: 1rem;
+  }
+  
+  .oscillator-type-button {
+    padding: 0.875rem;
+  }
+  
+  .oscillator-type-icon {
+    font-size: 1.75rem;
+  }
+  
+  .oscillator-actions {
+    flex-direction: column;
+  }
+  
+  .oscillator-analytics {
+    padding: 1rem;
+  }
+  
+  .oscillator-analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .oscillator-type-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .oscillator-type-selector {
+    padding: 0.875rem;
+  }
+  
+  .oscillator-type-selector-icon {
+    font-size: 1.2rem;
+  }
+  
+  .oscillator-type-selector-title {
+    font-size: 1rem;
+  }
+  
+  .oscillator-type-button {
+    padding: 0.75rem;
+  }
+  
+  .oscillator-type-icon {
+    font-size: 1.5rem;
+  }
+  
+  .oscillator-type-name {
+    font-size: 0.9rem;
+  }
+  
+  .oscillator-analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}

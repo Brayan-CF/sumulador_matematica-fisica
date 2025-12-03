@@ -1,0 +1,441 @@
+/******************************************************************************
+ * ESTILOS: SIMULATOR LAYOUT TEMPLATE
+ * Estilos para el template maestro de todos los simuladores
+ ******************************************************************************/
+
+/* Contenedor principal del simulador */
+.simulator-layout {
+  min-height: calc(100vh - 120px);
+  padding: 2rem 0;
+  animation: fadeInLayout 0.5s ease-in-out;
+}
+
+/* Header del simulador */
+.simulator-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+}
+
+/* Navegación de retorno */
+.simulator-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Botón de volver */
+.simulator-back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--bs-secondary);
+  border-radius: 0.375rem;
+  color: var(--bs-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background: transparent;
+}
+
+.simulator-back-button:hover {
+  background: var(--bs-secondary);
+  color: white;
+  transform: translateX(-5px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.simulator-back-button i {
+  font-size: 1.1rem;
+  transition: transform 0.3s ease;
+}
+
+.simulator-back-button:hover i {
+  transform: translateX(-3px);
+}
+
+/* Contenedor de título y descripción */
+.simulator-title-container {
+  flex: 1;
+}
+
+/* Título principal */
+.simulator-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--bs-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  letter-spacing: -0.5px;
+}
+
+.simulator-title-icon {
+  font-size: 2rem;
+  color: var(--bs-danger);
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Descripción */
+.simulator-description {
+  font-size: 1.05rem;
+  color: var(--bs-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Objetivo didáctico */
+.simulator-objective {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #d1ecf1 0%, #e8f6f8 100%);
+  border-left: 4px solid var(--bs-info);
+  border-radius: 0.5rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.simulator-objective-icon {
+  font-size: 1.5rem;
+  color: var(--bs-info);
+  flex-shrink: 0;
+}
+
+.simulator-objective-content {
+  flex: 1;
+}
+
+.simulator-objective strong {
+  color: var(--bs-info-dark);
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 1.05rem;
+}
+
+/* Grid principal */
+.simulator-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Columna izquierda (controles + resultados) */
+.simulator-left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Columna derecha (canvas) */
+.simulator-right-column {
+  position: sticky;
+  top: 1rem;
+  align-self: flex-start;
+}
+
+/* Sección de ecuaciones (opcional) */
+.simulator-equations {
+  padding: 1.25rem;
+  background: #f8f9fa;
+  border-radius: 0.5rem;
+  border: 2px solid #e9ecef;
+  margin-top: 1.5rem;
+}
+
+.simulator-equations h6 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: var(--bs-primary);
+  font-weight: 600;
+}
+
+.simulator-equations-content {
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  color: var(--bs-dark);
+  line-height: 1.8;
+}
+
+/* Tema oscuro */
+.dark-theme .simulator-layout {
+  color: #e0e0e0;
+}
+
+.dark-theme .simulator-header {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark-theme .simulator-title {
+  color: #f0f0f0;
+}
+
+.dark-theme .simulator-description {
+  color: #b0b0b0;
+}
+
+.dark-theme .simulator-back-button {
+  border-color: #6c757d;
+  color: #adb5bd;
+}
+
+.dark-theme .simulator-back-button:hover {
+  background: #6c757d;
+  color: white;
+}
+
+.dark-theme .simulator-objective {
+  background: linear-gradient(135deg, #0d3d56 0%, #1a5470 100%);
+  border-left-color: #0dcaf0;
+}
+
+.dark-theme .simulator-objective-icon {
+  color: #6edff6;
+}
+
+.dark-theme .simulator-objective strong {
+  color: #6edff6;
+}
+
+.dark-theme .simulator-equations {
+  background: #2d3748;
+  border-color: #4a5568;
+}
+
+.dark-theme .simulator-equations h6 {
+  color: #6edff6;
+}
+
+.dark-theme .simulator-equations-content {
+  color: #e0e0e0;
+}
+
+/* Animación de entrada */
+@keyframes fadeInLayout {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+
+/* Tablets */
+@media (max-width: 992px) {
+  .simulator-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .simulator-right-column {
+    position: static;
+  }
+  
+  .simulator-title {
+    font-size: 1.75rem;
+  }
+  
+  .simulator-title-icon {
+    font-size: 1.75rem;
+  }
+  
+  .simulator-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+/* Móviles */
+@media (max-width: 768px) {
+  .simulator-layout {
+    padding: 1.5rem 0;
+  }
+  
+  .simulator-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+  
+  .simulator-title {
+    font-size: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .simulator-title-icon {
+    font-size: 1.5rem;
+  }
+  
+  .simulator-description {
+    font-size: 1rem;
+  }
+  
+  .simulator-nav {
+    gap: 0.75rem;
+  }
+  
+  .simulator-back-button {
+    padding: 0.45rem 0.875rem;
+    font-size: 0.95rem;
+  }
+  
+  .simulator-objective {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .simulator-objective-icon {
+    font-size: 1.25rem;
+  }
+  
+  .simulator-left-column {
+    gap: 1rem;
+  }
+  
+  .simulator-equations {
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 576px) {
+  .simulator-layout {
+    padding: 1rem 0;
+  }
+  
+  .simulator-header {
+    margin-bottom: 1rem;
+  }
+  
+  .simulator-title {
+    font-size: 1.3rem;
+  }
+  
+  .simulator-title-icon {
+    font-size: 1.3rem;
+  }
+  
+  .simulator-description {
+    font-size: 0.95rem;
+  }
+  
+  .simulator-back-button {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  
+  .simulator-objective {
+    padding: 0.875rem;
+  }
+  
+  .simulator-objective strong {
+    font-size: 1rem;
+  }
+  
+  .simulator-equations-content {
+    font-size: 0.9rem;
+  }
+}
+
+/* Estados especiales */
+
+/* Loading state */
+.simulator-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1.5rem;
+}
+
+.simulator-loading-spinner {
+  width: 64px;
+  height: 64px;
+  border: 6px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--bs-primary);
+  border-radius: 50%;
+  animation: simulatorSpin 0.8s linear infinite;
+}
+
+.simulator-loading-text {
+  font-size: 1.1rem;
+  color: var(--bs-secondary);
+  font-weight: 500;
+}
+
+@keyframes simulatorSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error state */
+.simulator-error {
+  padding: 2rem;
+  background: linear-gradient(135deg, #f8d7da 0%, #ffe6e8 100%);
+  border: 2px solid var(--bs-danger);
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.simulator-error-icon {
+  font-size: 3rem;
+  color: var(--bs-danger);
+  margin-bottom: 1rem;
+}
+
+.simulator-error-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--bs-danger);
+  margin-bottom: 0.5rem;
+}
+
+.simulator-error-message {
+  color: #842029;
+  margin-bottom: 1.5rem;
+}
+
+/* Print styles */
+@media print {
+  .simulator-nav {
+    display: none;
+  }
+  
+  .simulator-back-button {
+    display: none;
+  }
+  
+  .simulator-layout {
+    padding: 0;
+  }
+  
+  .simulator-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
