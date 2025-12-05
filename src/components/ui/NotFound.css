@@ -1,0 +1,171 @@
+/* ============================================================================
+   PHYMATH-SIM: ESTILOS PÁGINA 404
+   ============================================================================ */
+
+.not-found-page {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem 0;
+}
+
+.not-found-page.dark-mode {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+/* Código de error 404 */
+.error-code {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.error-code .digit {
+  font-size: 8rem;
+  font-weight: 900;
+  color: white;
+  text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  line-height: 1;
+}
+
+.error-code .digit.zero {
+  position: relative;
+}
+
+.error-code .digit.zero i {
+  font-size: 7rem;
+  color: white;
+}
+
+/* Animación de rotación para el engranaje */
+.spinning {
+  animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animación de rebote para el código */
+.error-animation {
+  animation: bounceIn 0.8s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Tarjeta de detalles del error */
+.error-details .card {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px);
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.error-details .card-body {
+  color: white;
+}
+
+.not-found-page.dark-mode .error-details .card {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Textos */
+.not-found-page h1,
+.not-found-page .lead {
+  color: white;
+}
+
+.not-found-page .text-muted {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.not-found-page .text-secondary-custom {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Botones */
+.not-found-page .btn-primary {
+  background: white;
+  color: #667eea;
+  border: none;
+  font-weight: 600;
+}
+
+.not-found-page .btn-primary:hover {
+  background: #f0f0f0;
+  color: #764ba2;
+}
+
+.not-found-page .btn-outline-secondary {
+  border-color: white;
+  color: white;
+}
+
+.not-found-page .btn-outline-secondary:hover {
+  background: white;
+  color: #667eea;
+}
+
+.not-found-page .btn-outline-danger,
+.not-found-page .btn-outline-success {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+}
+
+.not-found-page .btn-outline-danger:hover {
+  background: #dc3545;
+  border-color: #dc3545;
+}
+
+.not-found-page .btn-outline-success:hover {
+  background: #198754;
+  border-color: #198754;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .error-code .digit {
+    font-size: 5rem;
+  }
+  
+  .error-code .digit.zero i {
+    font-size: 4.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-code .digit {
+    font-size: 3.5rem;
+  }
+  
+  .error-code .digit.zero i {
+    font-size: 3rem;
+  }
+  
+  .not-found-page h1 {
+    font-size: 1.5rem;
+  }
+}

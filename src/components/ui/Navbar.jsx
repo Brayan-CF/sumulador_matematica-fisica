@@ -106,6 +106,15 @@ function Navbar() {
                 </li>
               </ul>
             </li>
+
+            <li className="nav-item">
+              <Link 
+                className={`nav-link ${isActive('/coming-soon') ? 'active' : ''}`} 
+                to="/coming-soon"
+              >
+                <i className="bi bi-rocket-takeoff me-1 text-info"></i>Próximamente
+              </Link>
+            </li>
           </ul>
           
           <ul className="navbar-nav">
