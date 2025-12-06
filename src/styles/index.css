@@ -212,3 +212,19 @@ input:checked + .theme-slider .moon-icon {
 .dark-theme .text-secondary-custom {
   color: #a0aec0;
 }
+
+/* GitHub Link Card en Dashboard */
+.github-link-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.github-link-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.stats-card a {
+  text-decoration: none;
+  color: inherit;
+}

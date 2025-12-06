@@ -46,12 +46,22 @@ function Dashboard() {
                   </div>
                 </div>
                 <div className="col-md-4">
-                  <div className="stats-card rounded p-4">
-                    <h3 className="fw-bold">
-                      <i className="bi bi-github me-2"></i>100%
-                    </h3>
-                    <p className="mb-0">Código Abierto</p>
-                  </div>
+                  <a 
+                    href="https://github.com/Brayan-CF/sumulador_matematica-fisica" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-decoration-none"
+                  >
+                    <div className="stats-card rounded p-4 github-link-card">
+                      <h3 className="fw-bold">
+                        <i className="bi bi-github me-2"></i>100%
+                      </h3>
+                      <p className="mb-0">Código Abierto</p>
+                      <small className="d-block mt-1 opacity-75">
+                        <i className="bi bi-box-arrow-up-right me-1"></i>Ver en GitHub
+                      </small>
+                    </div>
+                  </a>
                 </div>
               </div>
 
